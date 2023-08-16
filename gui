@@ -1,8 +1,6 @@
--- Create a ScreenGui to hold the GUI elements
 local gui = Instance.new("ScreenGui")
 gui.Parent = game.Players.LocalPlayer.PlayerGui
 
--- Create a Frame to hold the entire GUI content
 local guiFrame = Instance.new("Frame")
 guiFrame.Parent = gui
 guiFrame.Size = UDim2.new(0, 250, 0, 200)
@@ -10,27 +8,26 @@ guiFrame.Position = UDim2.new(0.5, -125, 0.2, 0)
 guiFrame.BackgroundTransparency = 0.5
 guiFrame.BackgroundColor3 = Color3.new(0, 0, 0)
 
--- Create a TextButton for toggling the GUI visibility
 local toggleButton = Instance.new("TextButton")
 toggleButton.Parent = guiFrame
 toggleButton.Size = UDim2.new(0, 100, 0, 30)
 toggleButton.Position = UDim2.new(0.5, -50, 0.8, 0)
 toggleButton.Text = "Toggle GUI"
+toggleButton.BackgroundColor3 = Color3.new(0, 0, 0) -- Change background color to black
 
--- Create a close button for the GUI
 local closeButton = toggleButton:Clone()
 closeButton.Parent = guiFrame
 closeButton.Position = UDim2.new(1, -30, 0, 0)
 closeButton.Text = "X"
+closeButton.BackgroundColor3 = Color3.new(0, 0, 0) -- Change background color to black
 
--- Create a TextButton for giving teleportation tool
 local tpToolButton = Instance.new("TextButton")
 tpToolButton.Parent = guiFrame
 tpToolButton.Size = UDim2.new(0, 150, 0, 30)
 tpToolButton.Position = UDim2.new(0.5, -75, 0.15, 0)
 tpToolButton.Text = "Teleport Tool"
+tpToolButton.BackgroundColor3 = Color3.new(0, 0, 0) -- Change background color to black
 
--- Create a Frame to hold the sliders
 local sliderFrame = Instance.new("Frame")
 sliderFrame.Parent = guiFrame
 sliderFrame.Size = UDim2.new(0, 200, 0, 20)
@@ -38,7 +35,6 @@ sliderFrame.Position = UDim2.new(0.5, -100, 0.4, 0)
 sliderFrame.BackgroundTransparency = 0.5
 sliderFrame.BackgroundColor3 = Color3.new(0, 0, 0)
 
--- Create a Slider for teleporting
 local teleportSlider = Instance.new("TextLabel")
 teleportSlider.Parent = sliderFrame
 teleportSlider.Size = UDim2.new(0, 0, 1, 0)
@@ -46,66 +42,21 @@ teleportSlider.BackgroundColor3 = Color3.new(0, 1, 0)
 teleportSlider.Text = ""
 teleportSlider.ClipsDescendants = true
 
--- Create a Slider for walk speed
 local walkSpeedSlider = teleportSlider:Clone()
 walkSpeedSlider.Parent = sliderFrame
 walkSpeedSlider.BackgroundColor3 = Color3.new(0, 0, 1)
+walkSpeedSlider.Text = "Change Walkspeed" -- Change text to "Change Walkspeed"
 
--- Function to teleport the player to a clicked point
-local function teleportToPoint(targetPosition)
-    local character = game.Players.LocalPlayer.Character
-    if character then
-        local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
-        humanoidRootPart.CFrame = CFrame.new(targetPosition)
-    end
-end
+-- Create a TextButton to execute the loadstring
+local executeButton = Instance.new("TextButton")
+executeButton.Parent = guiFrame
+executeButton.Size = UDim2.new(0, 150, 0, 30)
+executeButton.Position = UDim2.new(0.5, -75, 0.6, 0)
+executeButton.Text = "Execute Script"
+executeButton.BackgroundColor3 = Color3.new(0, 0, 0) -- Change background color to black
 
--- Function to update walk speed based on slider position
-local function updateWalkSpeed()
-    local sliderValue = walkSpeedSlider.AbsoluteSize.x / sliderFrame.AbsoluteSize.x
-    local newWalkSpeed = 16 + (500 - 16) * sliderValue
-    game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid").WalkSpeed = newWalkSpeed
-end
-
--- Connect slider's MouseMoved event to update teleport or walk speed
-sliderFrame.MouseMoved:Connect(function()
-    updateWalkSpeed()
+executeButton.Activated:Connect(function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/FilteringEnabled/NamelessAdmin/main/Source"))()
 end)
 
--- Connect the toggle button to toggleGUI function
-toggleButton.Activated:Connect(toggleGUI)
-
--- Connect the close button to close the GUI and make it float
-closeButton.Activated:Connect(function()
-    guiFrame.Visible = false
-    guiFrame.Parent = nil
-    guiFrame.Parent = game.Players.LocalPlayer.PlayerGui
-end)
-
--- Connect the teleport button to giveTeleportTool function
-tpToolButton.Activated:Connect(function()
-    local tool = Instance.new("Tool")
-    tool.RequiresHandle = true
-    tool.Name = "Teleport Tool"
-    tool.Parent = game.Players.LocalPlayer.Backpack
-
-    tool.Activated:Connect(function()
-        local mouse = game.Players.LocalPlayer:GetMouse()
-        local targetPosition = mouse.Hit.p
-        teleportToPoint(targetPosition)
-local player = game.Players.LocalPlayer
-local gui = Instance.new("ScreenGui")
-gui.Parent = player.PlayerGui
-
-
-local loadButton = Instance.new("TextButton")
-loadButton.Parent = guiFrame
-loadButton.Size = UDim2.new(0, 150, 0, 30)
-loadButton.Position = UDim2.new(0.5, -75, 0.7, 0)
-loadButton.Text = "Load Script"
-loadButton.Activated:Connect(function()
-    loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
-end)
-
-    end)
-end)
+-- ... (rest of your code)
