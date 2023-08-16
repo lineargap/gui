@@ -1,62 +1,78 @@
-local gui = Instance.new("ScreenGui")
-gui.Parent = game.Players.LocalPlayer.PlayerGui
+local screenGui = game:GetService("StarterPack"):WaitForChild("ScreenGui")
 
-local guiFrame = Instance.new("Frame")
-guiFrame.Parent = gui
-guiFrame.Size = UDim2.new(0, 250, 0, 200)
-guiFrame.Position = UDim2.new(0.5, -125, 0.2, 0)
-guiFrame.BackgroundTransparency = 0.5
-guiFrame.BackgroundColor3 = Color3.new(0, 0, 0)
+local function makeMovable(frame)
+    local isDragging = false
+    local startPos
+    local startOffset
 
-local toggleButton = Instance.new("TextButton")
-toggleButton.Parent = guiFrame
-toggleButton.Size = UDim2.new(0, 100, 0, 30)
-toggleButton.Position = UDim2.new(0.5, -50, 0.8, 0)
-toggleButton.Text = "Toggle GUI"
-toggleButton.BackgroundColor3 = Color3.new(0, 0, 0) -- Change background color to black
+    frame.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch then
+            isDragging = true
+            startPos = input.Position
+            startOffset = frame.Position - UDim2.new(0, startPos.X, 0, startPos.Y)
+        end
+    end)
 
-local closeButton = toggleButton:Clone()
-closeButton.Parent = guiFrame
-closeButton.Position = UDim2.new(1, -30, 0, 0)
-closeButton.Text = "X"
-closeButton.BackgroundColor3 = Color3.new(0, 0, 0) -- Change background color to black
+    frame.InputChanged:Connect(function(input)
+        if isDragging and input.UserInputType == Enum.UserInputType.Touch then
+            local newPos = UDim2.new(0, input.Position.X, 0, input.Position.Y) + startOffset
+            frame.Position = newPos
+        end
+    end)
 
-local tpToolButton = Instance.new("TextButton")
-tpToolButton.Parent = guiFrame
-tpToolButton.Size = UDim2.new(0, 150, 0, 30)
-tpToolButton.Position = UDim2.new(0.5, -75, 0.15, 0)
-tpToolButton.Text = "Teleport Tool"
-tpToolButton.BackgroundColor3 = Color3.new(0, 0, 0) -- Change background color to black
+    frame.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch then
+            isDragging = false
+        end
+    end)
+end
 
-local sliderFrame = Instance.new("Frame")
-sliderFrame.Parent = guiFrame
-sliderFrame.Size = UDim2.new(0, 200, 0, 20)
-sliderFrame.Position = UDim2.new(0.5, -100, 0.4, 0)
-sliderFrame.BackgroundTransparency = 0.5
-sliderFrame.BackgroundColor3 = Color3.new(0, 0, 0)
+local movableFrame = screenGui:WaitForChild("MovableFrame")
+makeMovable(movableFrame)
 
-local teleportSlider = Instance.new("TextLabel")
-teleportSlider.Parent = sliderFrame
-teleportSlider.Size = UDim2.new(0, 0, 1, 0)
-teleportSlider.BackgroundColor3 = Color3.new(0, 1, 0)
-teleportSlider.Text = ""
-teleportSlider.ClipsDescendants = true
+local function addButtonAction(button, action)
+    button.MouseButton1Click:Connect(action)
+end
 
-local walkSpeedSlider = teleportSlider:Clone()
-walkSpeedSlider.Parent = sliderFrame
-walkSpeedSlider.BackgroundColor3 = Color3.new(0, 0, 1)
-walkSpeedSlider.Text = "Change Walkspeed" -- Change text to "Change Walkspeed"
-
--- Create a TextButton to execute the loadstring
-local executeButton = Instance.new("TextButton")
-executeButton.Parent = guiFrame
-executeButton.Size = UDim2.new(0, 150, 0, 30)
-executeButton.Position = UDim2.new(0.5, -75, 0.6, 0)
-executeButton.Text = "Execute Script"
-executeButton.BackgroundColor3 = Color3.new(0, 0, 0) -- Change background color to black
-
-executeButton.Activated:Connect(function()
+local function button1Action()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/FilteringEnabled/NamelessAdmin/main/Source"))()
+end
+
+local function button2Action()
+    local player = game.Players.LocalPlayer
+local partName = "TeleportPart"  -- Replace with the actual name of the part you want to teleport to
+
+-- Function to teleport the player to the specified part
+local function teleportToPart(part)
+    local targetPart = game.Workspace:FindFirstChild(part)
+    
+    if targetPart then
+        player.Character:SetPrimaryPartCFrame(targetPart.CFrame + Vector3.new(0, 5, 0))  -- Adjust the offset if needed
+    end
+end
+
+-- Check for the player's character and set up teleportation
+player.CharacterAdded:Connect(function(character)
+    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+    
+    -- Set up a trigger to teleport when the player touches the part
+    local function onPartTouched(otherPart)
+        if otherPart.Parent == player.Character and otherPart.Name == partName then
+            teleportToPart(touchpart)
+        end
+    end
+    
+    -- Connect the touch event
+    local targetPart = game.Workspace:WaitForChild(touchpart)
+    targetPart.Touched:Connect(onPartTouched)
 end)
 
--- ... (rest of your code)
+end
+
+-- Get references to the buttons
+local button1 = screenGui:WaitForChild("Button1")
+local button2 = screenGui:WaitForChild("Button2")
+-- ... and so on for the other buttons
+
+-- Attach actions to buttons
+addButtonAction(button1, 
