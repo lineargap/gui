@@ -93,5 +93,19 @@ tpToolButton.Activated:Connect(function()
         local mouse = game.Players.LocalPlayer:GetMouse()
         local targetPosition = mouse.Hit.p
         teleportToPoint(targetPosition)
+local player = game.Players.LocalPlayer
+local gui = Instance.new("ScreenGui")
+gui.Parent = player.PlayerGui
+
+
+local loadButton = Instance.new("TextButton")
+loadButton.Parent = guiFrame
+loadButton.Size = UDim2.new(0, 150, 0, 30)
+loadButton.Position = UDim2.new(0.5, -75, 0.7, 0)
+loadButton.Text = "Load Script"
+loadButton.Activated:Connect(function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+end)
+
     end)
 end)
